@@ -21,19 +21,38 @@ async function getRepos(profile) {
 
 document.querySelector('#search').addEventListener('submit', async(e) => {
     e.preventDefault();
+
+
+
     const username = document.querySelector('#findByUsername').value;
 
-    // console.log(username);
 
-    const profile = await getUser(username);
+    if (username.length > 0) {
 
-    const repos = await getRepos(profile);
-    console.log(repos);
+        document.querySelector('.loader').style.display = 'block';
 
-    showProfile(profile);
-    showRepos(repos);
+        document.querySelector('.user-details').style.display = 'none';
+        document.querySelector('.notFound').style.display = 'none';
 
-    console.log(profile);
+        const profile = await getUser(username);
+
+        document.querySelector('.loader').style.display = 'none';
+
+        if (profile.message === 'Not Found') {
+            document.querySelector('.notFound').style.display = 'block';
+
+        } else {
+            const repos = await getRepos(profile);
+            document.querySelector('.user-details').style.display = 'flex';
+
+
+            showProfile(profile);
+            showRepos(repos);
+        }
+        document.querySelector('#findByUsername').value = '';
+
+    }
+
 });
 
 function showRepos(repos) {
